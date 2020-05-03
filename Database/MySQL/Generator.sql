@@ -1,9 +1,13 @@
+create DATABASE TeslaInventory;
+USE TeslaInventory;
+
 # drop them tables
 drop table if exists ProductOrderAdjudicator;
 drop table if exists Products;
 drop table if exists Orders;
 drop table IF EXISTS Customers;
 
+# Create customers table
 CREATE TABLE Customers (
     CustID int NOT NULL,
     FirstName varchar(100) NOT NULL,
@@ -15,6 +19,7 @@ CREATE TABLE Customers (
     PRIMARY KEY (CustID)
 ); 
 
+# Create Products table
 CREATE TABLE Products (
     ProdID int NOT NULL,
     ProdName VARCHAR(128) NOT NULL,
@@ -27,19 +32,22 @@ CREATE TABLE Products (
     PRIMARY KEY (ProdID)
 ); 
 
+# Create customers Orders
 CREATE TABLE Orders (
-    OrderID int NOT NULL,
-    CustID int,
-    Warranty boolean NOT NULL,
+    OrderID INT NOT NULL,
+    CustID INT,
+    Warranty BOOLEAN NOT NULL,
     PaymentMethod VARCHAR(32),
     PRIMARY KEY (OrderID),
-    FOREIGN KEY (CustID) REFERENCES Customers(CustID)
+    FOREIGN KEY (CustID)
+		REFERENCES Customers (CustID)
 ); 
 
-CREATE TABLE ProductOrderAdjudicator (
+# Create ProductOrdersLookup table to represent the many to many relationship between products and orders
+CREATE TABLE ProductOrderLookup (
 	ProdID int NOT NULL,
     OrderID int NOT NULL,
-    FOREIGN KEY (ProdID) REFERENCES game.products(ProdID),
-    FOREIGN KEY (OrderID) REFERENCES game.orders(OrderID),
+    FOREIGN KEY (ProdID) REFERENCES Products(ProdID),
+    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
     UNIQUE(ProdID, OrderID)
 );
