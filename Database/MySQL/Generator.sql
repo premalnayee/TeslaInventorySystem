@@ -2,6 +2,7 @@ create DATABASE TeslaInventory;
 USE TeslaInventory;
 
 # drop them tables
+
 drop table if exists ProductOrderAdjudicator;
 drop table if exists Products;
 drop table if exists Orders;
