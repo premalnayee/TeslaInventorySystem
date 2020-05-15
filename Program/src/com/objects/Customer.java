@@ -1,8 +1,10 @@
 package com.objects;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.DBlink.DB;
+import com.mysql.cj.protocol.Resultset;
 import com.mysql.cj.xdevapi.PreparableStatement;
 
 //import java.util.HashMap;
@@ -63,23 +65,37 @@ public class Customer {
 		Age = age;
 	}
 	
-	public String getFromDB(int custID) throws SQLException {
+	public String getFromDB(int custID) throws SQLException  {
 		DB.connect();
-		System.out.println(DB.exQuery("SELECT * FROM CUSTOMERS").getString(custID));
+			ResultSet rs = DB.exQuery("SELECT * FROM customers WHERE CustID=" + custID );
+			
+			while (rs.next()) {
+				this.CustID    = rs.getInt("CustID");
+				this.FirstName = rs.getString("FirstName");
+				this.LastName  = rs.getString("LastName");
+				this.Address   = rs.getString("Address");
+				this.EmailAddress = rs.getString("EmailAddress");
+				this.PhoneNumber = rs.getString("PhoneNumber");
+				this.Age		= rs.getInt("Age");
+			}
+			String name = FirstName + " " + LastName;
+			System.out.println(name);
 		DB.close();
-		return "";
+		return name;
 	}
 	
-	public void addToDb() {
+	public void addToDb(){
 		DB.connect();
-//		System.out.println(DB.exUpdate("INSERT INTO Customers VALUES (FirstName = ?)");
+			String Query = "INSERT INTO Customers (FirstName, LastName, Address, EmailAddress, PhoneNumber, Age) ";
+			Query += "VALUES (" + FirstName + ", " + LastName + ", " + Address + ", " + EmailAddress + ", "+ PhoneNumber + ", "+ Age + ")";
+			DB.exUpdate(Query);
+		DB.close(); 
 	}
 	
-	public String createAddQuery() {
-		String Query = "INSERT INTO Customers (FirstName, LastName, Address, EmailAddress, PhoneNumber, Age) ";
-		Query += "VALUES (" + FirstName + ", " + LastName + ", " + Address + ", " + EmailAddress + ", "+ PhoneNumber + ", "+ Age + ")";
-		return Query;
-	}
+//	public String createAddQuery() {
+//		
+//		return Query;
+//	}
 	
 	
 	/**
@@ -169,9 +185,9 @@ public class Customer {
 		Age = age;
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 		Customer harry = new Customer("Harry", "bob", "10", "f@f", "12345", 12);
-		harry.getFromDB(0);
+		harry.getFromDB(1);
 	}
 	
 }
