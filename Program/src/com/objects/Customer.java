@@ -66,7 +66,6 @@ public class Customer {
 	}
 	
 	public String getFromDB(int custID) throws SQLException  {
-		DB.connect();
 			ResultSet rs = DB.exQuery("SELECT * FROM customers WHERE CustID=" + custID );
 			
 			while (rs.next()) {
@@ -80,16 +79,14 @@ public class Customer {
 			}
 			String name = FirstName + " " + LastName;
 			System.out.println(name);
-		DB.close();
 		return name;
 	}
 	
-	public void addToDb(){
-		DB.connect();
+	public int addToDb(){
 			String Query = "INSERT INTO Customers (FirstName, LastName, Address, EmailAddress, PhoneNumber, Age) ";
 			Query += "VALUES (" + FirstName + ", " + LastName + ", " + Address + ", " + EmailAddress + ", "+ PhoneNumber + ", "+ Age + ")";
-			DB.exUpdate(Query);
-		DB.close(); 
+			int changedKey = DB.exUpdate(Query);
+		return changedKey;
 	}
 	
 //	public String createAddQuery() {

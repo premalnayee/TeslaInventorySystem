@@ -44,12 +44,14 @@ public class DB {
 		return r;
 	}
 	
-	public static void exUpdate(String query) {
+	public static int exUpdate(String query) {
+		int changedKey = 0;
 		try {
-			stmt.executeUpdate(query);
+			changedKey = stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return changedKey;
 	}
 	
 

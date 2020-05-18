@@ -1,7 +1,14 @@
 package com.objects;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
 //import java.util.HashMap;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+
+import com.DBlink.DB;
 
 public class Product {
 
@@ -31,6 +38,7 @@ public class Product {
 //		this.productParameters = productParameters;
 //	}
 
+	private int ProdID;
 	private String ProdName;
 	private String Colour;
 	private String BatterySize;
@@ -48,15 +56,54 @@ public class Product {
 	 * @param productDelays
 	 */
 	public Product(String prodName, String colour, String batterySize, Boolean autopilot, Boolean dualMotor,
-			Date releaseDate, String productDelays) {
+			String releaseDate, String productDelays) {
 		super();
 		ProdName = prodName;
 		Colour = colour;
 		BatterySize = batterySize;
 		Autopilot = autopilot;
 		DualMotor = dualMotor;
-		ReleaseDate = releaseDate;
+		ReleaseDate = Date.valueOf(releaseDate);
 		ProductDelays = productDelays;
+	}
+	
+	public String getFromDB(int prodID) throws SQLException  {
+		DB.connect();
+			ResultSet rs = DB.exQuery("SELECT * FROM products WHERE ProdID=" + prodID );
+			
+			while (rs.next()) {
+				this.ProdID = rs.getInt("ProdID");
+				this.ProdName    = rs.getString("ProdName");
+				this.Colour = rs.getString("Colour");
+				this.BatterySize  = rs.getString("BatterySize");
+				this.Autopilot = rs.getBoolean("Autopilot");
+				this.DualMotor = rs.getBoolean("DualMotor");
+				this.ReleaseDate = rs.getDate("ReleaseDate");
+				this.ProductDelays = rs.getString("ProductDelays");
+			}
+			String ProdDesc = ProdName + " " + ReleaseDate.toString();
+		DB.close();
+		return ProdDesc;
+	}
+	
+	public int addToDb(){
+		int changedKey = 0;
+		try {
+			PreparedStatement preparedStatement = DB.getConn().prepareStatement("INSERT INTO products (ProdName, Colour, BatterySize, Autopilot, DualMotor, ReleaseDate, ProductDelays)"
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1, ProdName);
+			preparedStatement.setString(2, Colour);
+			preparedStatement.setString(3, BatterySize);
+			preparedStatement.setBoolean(4, Autopilot);
+			preparedStatement.setBoolean(5, DualMotor);
+			preparedStatement.setDate(6, ReleaseDate);
+			preparedStatement.setString(7, ProductDelays);
+			changedKey = preparedStatement.executeUpdate();
+			
+		} catch (SQLException e) {
+			System.out.println("SQL Error in products class addtodb method");
+		}
+		return changedKey;
 	}
 	
 	

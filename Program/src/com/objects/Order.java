@@ -1,5 +1,11 @@
 package com.objects;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import com.DBlink.DB;
+import com.mysql.cj.x.protobuf.MysqlxSql.StmtExecute;
+
 //import java.util.HashMap;
 
 public class Order {
@@ -14,19 +20,41 @@ public class Order {
 	 * } // // public void setOrderParameters(HashMap<String, String>
 	 * orderParameters) { // this.orderParameters = orderParameters; // }
 	 */
+	private int OrderID;
 	private int CustID;
-	private String Warranty;
+	private boolean Warranty;
 	private String PaymentMethod;
 	/**
 	 * @param custID
 	 * @param warranty
 	 * @param paymentMethod
 	 */
-	public Order(int custID, String warranty, String paymentMethod) {
+	public Order(int custID, boolean warranty, String paymentMethod) {
 		super();
 		CustID = custID;
 		Warranty = warranty;
 		PaymentMethod = paymentMethod;
+	}
+	
+	public String getFromDB(int orderID) throws SQLException  {
+			ResultSet rs = DB.exQuery("SELECT * FROM orders WHERE OrderID=" + orderID );
+			
+			while (rs.next()) {
+				this.OrderID = rs.getInt("OrderID");
+				this.CustID    = rs.getInt("CustID");
+				this.Warranty = rs.getBoolean("Warranty");
+				this.PaymentMethod  = rs.getString("PaymentMethod");
+			}
+			String orderdesc = OrderID + " " + Warranty;
+			//System.out.println(orderdesc);
+		return orderdesc;
+	}
+	
+	public int addToDb(){
+			String Query = "INSERT INTO orders (CustID, Warranty, PaymentMethod) ";
+			Query += "VALUES (\" " + CustID + "\", \"" + Boolean.compare(Warranty, false)+ "\", \"" + PaymentMethod + "\")";
+			int changedKey = DB.exUpdate(Query);
+		return changedKey;
 	}
 	
 	/**
@@ -44,13 +72,13 @@ public class Order {
 	/**
 	 * @return the warranty
 	 */
-	public String getWarranty() {
+	public boolean getWarranty() {
 		return Warranty;
 	}
 	/**
 	 * @param warranty the warranty to set
 	 */
-	public void setWarranty(String warranty) {
+	public void setWarranty(boolean warranty) {
 		Warranty = warranty;
 	}
 	/**

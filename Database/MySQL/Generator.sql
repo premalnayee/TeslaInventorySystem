@@ -20,7 +20,7 @@ CREATE TABLE Customers (
 );
 
 CREATE TABLE Products (
-    ProdID INT NOT NULL,
+    ProdID INT NOT NULL AUTO_INCREMENT,
     ProdName VARCHAR(128) NOT NULL,
     Colour VARCHAR(32) NOT NULL,
     BatterySize VARCHAR(16) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE Products (
 );
 
 CREATE TABLE Orders (
-    OrderID INT NOT NULL,
+    OrderID INT NOT NULL AUTO_INCREMENT,
     CustID INT,
     Warranty BOOLEAN NOT NULL,
     PaymentMethod VARCHAR(32),
