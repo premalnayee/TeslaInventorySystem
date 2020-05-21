@@ -1,15 +1,15 @@
-create DATABASE TeslaInventory;
-USE TeslaInventory;
+#create DATABASE TeslaInventory;
+USE teslainventory;
 
 # drop them tables
 
-drop table if exists ProductOrderAdjudicator;
+drop table if exists ProductOrderLookup;
 drop table if exists Products;
 drop table if exists Orders;
 drop table IF EXISTS Customers;
 
 CREATE TABLE Customers (
-    CustID INT NOT NULL,
+    CustID INT NOT NULL AUTO_INCREMENT,
     FirstName VARCHAR(100) NOT NULL,
     LastName VARCHAR(100) NOT NULL,
     Address VARCHAR(256),
@@ -20,7 +20,7 @@ CREATE TABLE Customers (
 );
 
 CREATE TABLE Products (
-    ProdID INT NOT NULL,
+    ProdID INT NOT NULL AUTO_INCREMENT,
     ProdName VARCHAR(128) NOT NULL,
     Colour VARCHAR(32) NOT NULL,
     BatterySize VARCHAR(16) NOT NULL,
@@ -28,14 +28,16 @@ CREATE TABLE Products (
     DualMotor BOOLEAN NOT NULL,
     ReleaseDate DATE,
     ProductDelays VARCHAR(32) NOT NULL,
+    Price INT NOT NULL,
     PRIMARY KEY (ProdID)
 );
 
 CREATE TABLE Orders (
-    OrderID INT NOT NULL,
+    OrderID INT NOT NULL AUTO_INCREMENT,
     CustID INT,
     Warranty BOOLEAN NOT NULL,
     PaymentMethod VARCHAR(32),
+    Total INT NOT NULL,
     PRIMARY KEY (OrderID),
     FOREIGN KEY (CustID)
         REFERENCES Customers (CustID)
