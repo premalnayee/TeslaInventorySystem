@@ -10,7 +10,11 @@ SELECT `customers`.`CustID`,
 FROM `teslainventory`.`customers`;
 
 SELECT * FROM Orders;
+SELECT * FROM Customers;
+SELECT * FROM ProductOrderLookup;
 
+SELECT CustID FROM Customers 
+WHERE FirstName = "John" AND LastName = "Gerry";
 
 INSERT INTO Customers (
     `customers`.`FirstName`,
@@ -42,6 +46,25 @@ INSERT INTO `teslainventory`.`products`
 `ProductDelays`,
 `Price`)
 VALUES
+("Model X",
+"Space Grey",
+"75 KW",
+true,
+true,
+"2015-09-29",
+"6 months",
+60000);
+
+INSERT INTO `teslainventory`.`products`
+(`ProdName`,
+`Colour`,
+`BatterySize`,
+`Autopilot`,
+`DualMotor`,
+`ReleaseDate`,
+`ProductDelays`,
+`Price`)
+VALUES
 ("Model Y",
 "Black",
 "75KW",
@@ -51,4 +74,29 @@ true,
 "",
 40000);
 
-SELECT * FROM teslainventory.products;
+INSERT INTO `teslainventory`.`products`
+(`ProdName`,
+`Colour`,
+`BatterySize`,
+`Autopilot`,
+`DualMotor`,
+`ReleaseDate`,
+`ProductDelays`,
+`Price`)
+VALUES
+("Model 3",
+"Black",
+"75KW",
+true,
+true,
+"2019-03-13",
+"",
+30000);
+
+INSERT INTO `teslainventory`.`productorderlookup`
+(`ProdID`,
+`OrderID`)
+VALUES
+(1,
+1);
+

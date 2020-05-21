@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import com.DBlink.DB;
 
@@ -25,6 +26,7 @@ public class Order {
 	private int CustID;
 	private boolean Warranty;
 	private String PaymentMethod;
+	private ArrayList<Integer> ProductList;
 	private int Total;
 	/**
 	 * @param custID
@@ -42,7 +44,30 @@ public class Order {
 		Total = total;
 	}
 	
-	
+	/**
+	 * 
+	 */
+	public Order() {
+		super();
+	}
+
+	// This constructor takes in the products as IDs and calculates the price of the item
+	/**
+	 * @param orderID
+	 * @param custID
+	 * @param warranty
+	 * @param paymentMethod
+	 * @param products
+	 */
+	public Order(int custID, boolean warranty, String paymentMethod, ArrayList<Integer> productList) {
+		super();
+		CustID = custID;
+		Warranty = warranty;
+		PaymentMethod = paymentMethod;
+		ProductList = productList;
+		Total = calculateTotal();
+	}
+
 	/**
 	 * @param orderID
 	 */
@@ -58,8 +83,13 @@ public class Order {
 
 
 	public String getFromDB(int orderID) throws SQLException  {
-			ResultSet rs = DB.exQuery("SELECT * FROM orders WHERE OrderID=" + orderID );
-			
+		String orderdesc;
+		ResultSet rs;
+		ArrayList<Integer> ProductListNew = new ArrayList<Integer>();
+
+		try {		
+			rs = DB.exQuery("SELECT * FROM orders WHERE OrderID=" + orderID );
+
 			while (rs.next()) {
 				this.OrderID = rs.getInt("OrderID");
 				this.CustID    = rs.getInt("CustID");
@@ -67,8 +97,25 @@ public class Order {
 				this.PaymentMethod  = rs.getString("PaymentMethod");
 				this.Total = rs.getInt("Total");
 			}
-			String orderdesc = OrderID + " " + Warranty;
-			//System.out.println(orderdesc);
+			System.out.println(toString());
+			rs = DB.exQuery("SELECT * FROM ProductOrderLookup WHERE OrderID = " + orderID );
+
+			while (rs.next()) {
+				int ProdID_New = rs.getInt("ProdID");
+				if (ProdID_New != 0) {
+					ProductListNew.add(ProdID_New);
+				}
+			}
+			System.out.println(ProductListNew.get(0).toString());
+			this.ProductList = ProductListNew;
+		} catch (SQLException s) {
+			System.out.println("SQL exception issue in Order.getFromDB");
+		} catch (NullPointerException n) {
+			System.out.println("Null point exception issue in Order.getFromDB");
+		}
+
+		this.Total = calculateTotal();
+		orderdesc = OrderID + " " + Warranty + " " + Total;
 		return orderdesc;
 	}
 	
@@ -107,7 +154,16 @@ public class Order {
 		return stringy;
 	}
 
-
+	// Uses productList to calculate the total of the order
+	int calculateTotal() {
+		int sum = 0;
+		for (int prodID : this.ProductList) {
+			Product prodObj = new Product(prodID);
+			sum += prodObj.getPrice();
+		}
+		return sum;
+	}
+	
 	/**
 	 * @return the custID
 	 */
@@ -157,6 +213,34 @@ public class Order {
 	 */
 	public void setTotal(int total) {
 		Total = total;
+	}
+
+	/**
+	 * @return the orderID
+	 */
+	public int getOrderID() {
+		return OrderID;
+	}
+
+	/**
+	 * @param orderID the orderID to set
+	 */
+	public void setOrderID(int orderID) {
+		OrderID = orderID;
+	}
+
+	/**
+	 * @return the productList
+	 */
+	public ArrayList<Integer> getProductList() {
+		return ProductList;
+	}
+
+	/**
+	 * @param productList the productList to set
+	 */
+	public void setProductList(ArrayList<Integer> productList) {
+		ProductList = productList;
 	}
 	
 }

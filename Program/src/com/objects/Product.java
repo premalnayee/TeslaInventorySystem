@@ -83,6 +83,15 @@ public class Product {
 			e.printStackTrace();
 		}
 	}
+	
+	
+
+	/**
+	 * 
+	 */
+	public Product() {
+		super();
+	}
 
 	public String getFromDB(int prodID) throws SQLException  {
 			ResultSet rs = DB.exQuery("SELECT * FROM products WHERE ProdID=" + prodID );
@@ -123,13 +132,42 @@ public class Product {
 		return changedKey;
 	}
 	
+	public int findProdID(String name) {
+		ResultSet rs;
 		
+		try {
+			int ProdID_found=0;
+			
+			PreparedStatement preparedStatement = DB.getConn().prepareStatement("SELECT * FROM products WHERE ProdName = ?");
+			preparedStatement.setString(1, name);
+			rs = preparedStatement.executeQuery();
+			
+			while (rs.next()) {
+				//System.out.println(rs.getInt("CustID") + rs.getString("FirstName"));
+				ProdID_found  = rs.getInt("ProdID");
+			}
+			
+			return ProdID_found;
+		} catch (SQLException e) {
+			System.out.println("SQL Error in customer class findcust method"); 
+			e.printStackTrace();
+		} catch	(NullPointerException a){ 
+				System.out.println("Nullpoint error in addToDb method \nShowing all variables" + toString()); 
+		}
+		return 0;
+	}
 	
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
 		String stringy = "ProdName, Colour, BatterSize, Autopilot, Dualmotor, Product delays, Price\n";
 		stringy += ProdName + ", " + Colour + ", " + BatterySize + ", " + Autopilot + ", " + DualMotor + ", " + ReleaseDate + ", " + ProductDelays + ", " + Price;
+		return stringy;
+	}
+	
+	public String toStringShort() {
+		// TODO Auto-generated method stub
+		String stringy = ProdName + " " + BatterySize + " " + Price; 
 		return stringy;
 	}
 
