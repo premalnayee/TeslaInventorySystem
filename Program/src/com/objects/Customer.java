@@ -73,11 +73,9 @@ public class Customer {
 		super();
 	}
 
-	
 	/**
 	 * 
 	 */
-	
 	
 	public Customer(int custID) {
 		super();
@@ -95,42 +93,58 @@ public class Customer {
 			//e.printStackTrace();
 		}
 	}
-
+	
+	public Customer(String FName, String LName) {
+		super();
+		int CustID_found = findCustID(FName, LName);
+		
+		try {
+			getFromDB(CustID_found);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("SQL exception in constructor");
+			//e.printStackTrace();
+		} catch (NullPointerException a) {
+			// TODO: handle exception
+			System.out.println("Nullpointer exceptio in constructor");
+			//e.printStackTrace();
+		}
+	}
 
 	public String getFromDB(int custID) throws SQLException  {
 		ResultSet rs;
-		
-			try {
-				rs = DB.exQuery("SELECT * FROM customers WHERE CustID=" + custID );
-				
-				while (rs.next()) {
-					this.CustID    = rs.getInt("CustID");
-					this.FirstName = rs.getString("FirstName");
-					this.LastName  = rs.getString("LastName");
-					this.Address   = rs.getString("Address");
-					this.EmailAddress = rs.getString("EmailAddress");
-					this.PhoneNumber = rs.getString("PhoneNumber");
-					this.Age		= rs.getInt("Age");
-				}
-				String name = FirstName + " " + LastName;
-				System.out.println(name);
-			return name;
-			
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				System.out.println("SQL exception");
-				System.out.println("Error with finding record with that custID: " + custID);
-				//e.printStackTrace();
-			} catch (NullPointerException a) {
-				// TODO: handle exception
-				System.out.println("Nullpointer exception");
-				System.out.println("Error with finding record with that custID: " + custID);
-				//e.printStackTrace();
+
+		try {
+			rs = DB.exQuery("SELECT * FROM customers WHERE CustID=" + custID );
+
+			while (rs.next()) {
+				//System.out.println(rs.getInt("CustID") + rs.getString("FirstName"));
+				this.CustID    = rs.getInt("CustID");
+				this.FirstName = rs.getString("FirstName");
+				this.LastName  = rs.getString("LastName");
+				this.Address   = rs.getString("Address");
+				this.EmailAddress = rs.getString("EmailAddress");
+				this.PhoneNumber = rs.getString("PhoneNumber");
+				this.Age		= rs.getInt("Age");
 			}
-		return null;
+			String name = FirstName + " " + LastName;
+			//System.out.println(name);
+			return name;
+
+		} catch (SQLException e) { // TODO Auto-generated catch block
+			System.out.println("SQL exception");
+			System.out.println("Error with finding record with that custID: " + custID);
+			e.printStackTrace(); 
+		} catch (NullPointerException a) { // TODO: handle
+			//exception System.out.println("Nullpointer exception");
+			System.out.println("Error with finding record with that custID: " + custID);
+			//e.printStackTrace(); 
+			}
+			return null;
+
 	}
 	
-	public int addToDb(){
+	public int addToDb() throws SQLException{
 		/*
 		 * String Query =
 		 * "INSERT INTO Customers (FirstName, LastName, Address, EmailAddress, PhoneNumber, Age) "
@@ -139,11 +153,9 @@ public class Customer {
 		 * DB.exUpdate(Query); return changedKey;
 		 */
 		
-		System.out.println("here");
-		
 		int changedKey = 0;
 		try {
-			PreparedStatement preparedStatement = DB.getConn().prepareStatement("INSERT INTO Customers (FirstName, LastName, Address, EmailAddress, PhoneNumber, Age)"
+			PreparedStatement preparedStatement = DB.getConn().prepareStatement("INSERT INTO Customers (FirstName, LastName, Address, EmailAddress, PhoneNumber, Age) "
 					+ "VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			preparedStatement.setString(1, this.FirstName);
 			preparedStatement.setString(2, this.LastName);
@@ -152,16 +164,43 @@ public class Customer {
 			preparedStatement.setString(5, this.PhoneNumber);
 			preparedStatement.setInt(6, this.Age);
 			changedKey = preparedStatement.executeUpdate();
-			
+			return changedKey;
 		} catch (SQLException e) {
-			System.out.println("SQL Error in products class addtodb method");
-		} catch (NullPointerException a){
-			System.out.println("Nullpoint error in addToDb method \nShowing all variables" + toString());
+			e.printStackTrace();
+			System.out.println(toString());
+			System.out.println("SQL Error in customer class addtodb method"); 
+		} catch	(NullPointerException a){ 
+				System.out.println("Nullpoint error in addToDb method \nShowing all variables" + toString()); 
 		}
+			 
 		return changedKey;
 	}
 	
-	
+	public int findCustID(String FName, String LName) {
+		ResultSet rs;
+		
+		try {
+			int CustID_found=0;
+			
+			PreparedStatement preparedStatement = DB.getConn().prepareStatement("SELECT * FROM customers WHERE FirstName = ? AND LastName = ?");
+			preparedStatement.setString(1, FName);
+			preparedStatement.setString(2, LName);
+			rs = preparedStatement.executeQuery();
+			
+			while (rs.next()) {
+				//System.out.println(rs.getInt("CustID") + rs.getString("FirstName"));
+				CustID_found  = rs.getInt("CustID");
+			}
+			
+			return CustID_found;
+		} catch (SQLException e) {
+			System.out.println("SQL Error in customer class findcust method"); 
+			e.printStackTrace();
+		} catch	(NullPointerException a){ 
+				System.out.println("Nullpoint error in addToDb method \nShowing all variables" + toString()); 
+		}
+		return 0;
+	}
 	
 	
 	@Override
@@ -182,7 +221,7 @@ public class Customer {
 	 * @return the custID
 	 */
 	public int getCustID() {
-		return CustID;
+		return this.CustID;
 	}
 
 	/**

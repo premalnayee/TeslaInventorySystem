@@ -1,5 +1,6 @@
 package com.UI;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 import com.DBlink.DB;
@@ -9,7 +10,7 @@ public class UI {
 	
 	public static Scanner in = new Scanner(System.in);
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 		Administator admin = new Administator();
 		
 		DB.connect();

@@ -1,5 +1,7 @@
 package com.Users;
 
+import java.sql.SQLException;
+
 import com.UI.UI;
 import com.objects.Customer;
 import com.objects.Order;
@@ -7,7 +9,7 @@ import com.objects.Product;
 
 public class Administator {
 
-	public void start() {
+	public void start() throws SQLException {
 		
 		boolean running = true;
 		
@@ -42,7 +44,7 @@ public class Administator {
 	}
 	
 
-	private void create() {
+	private void create() throws SQLException {
 	
 		System.out.println("Which table would you like to create a record for?");
 		System.out.println("Type \'customer\' to add customers, \'product\' to add products, \'order\' for orders, \'return\' to return to original menu");
@@ -88,6 +90,8 @@ public class Administator {
 				default:
 					System.out.println("Error, try again");
 			}
+			
+			break;
 
 		case "product":
 			
