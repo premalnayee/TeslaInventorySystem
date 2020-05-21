@@ -2,67 +2,30 @@ package com.UI;
 
 import java.util.Scanner;
 
+import com.DBlink.DB;
+import com.Users.Administator;
+
 public class UI {
 	
 	public static Scanner in = new Scanner(System.in);
 	
-	public void start() {
+	public static void main(String[] args) {
+		Administator admin = new Administator();
 		
-		boolean running = true;
+		DB.connect();
 		
-		do {
+		System.out.println("Type your username (admin)");
 		
-			System.out.println("Type \'create\' to create a new record, \'read\' to read records, \'update\' to update records, \'delete\' to delete records, \'exit\' to exit");
-	
-			String option = in.next();
-				
-			switch (option) {
-			case "create":
-				System.out.println("Create");
-				break;
-			case "read":
-				System.out.println("Read");
-				break;
-			case "update":
-				System.out.println("Update");
-				break;
-			case "delete":
-				System.out.println("Delete");
-				break;
-			case "exit":
-				System.out.println("Exiting");
-				running = false;
-				break;
-			
-			default:
-				throw new IllegalArgumentException("Unexpected value: " + option);
-			}
-		} while (running);
-	}
-	
-
-	private void create() {
-		System.out.println("Which table would you like to create a record for?");
-		System.out.println("Type \'customer\' to add customers, \'product\' to add products, \'order\' for orders, \'return\' to return to original menu");
-		
-		String option = in.next();
-		
-		switch (option) {
-		case "customer":
-			System.out.println("customer");
+		switch (in.nextLine()) {
+		case "admin": {
+			admin.start();
 			break;
-		case "product":
-			System.out.println("product");
-			break;
-		case "order":
-			System.out.println("order");
-			break;
-		case "return":
-			System.out.println("Returning");
-			break;
-		
-		default:
-			throw new IllegalArgumentException("Unexpected value: " + option);
 		}
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + in.nextLine());
+		}
+		
+		
+		DB.close();
 	}
 }

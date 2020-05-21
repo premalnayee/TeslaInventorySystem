@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 
 import com.DBlink.DB;
 
@@ -46,6 +45,7 @@ public class Product {
 	private Boolean DualMotor;
 	private Date ReleaseDate;
 	private String ProductDelays;
+	private int Price;
 	/**
 	 * @param prodName
 	 * @param colour
@@ -55,8 +55,11 @@ public class Product {
 	 * @param releaseDate
 	 * @param productDelays
 	 */
+	
+	
+	
 	public Product(String prodName, String colour, String batterySize, Boolean autopilot, Boolean dualMotor,
-			String releaseDate, String productDelays) {
+			String releaseDate, String productDelays, int price) {
 		super();
 		ProdName = prodName;
 		Colour = colour;
@@ -65,10 +68,23 @@ public class Product {
 		DualMotor = dualMotor;
 		ReleaseDate = Date.valueOf(releaseDate);
 		ProductDelays = productDelays;
+		Price = price;
 	}
 	
+	/**
+	 * @param prodID
+	 */
+	public Product(int prodID) {
+		super();
+		try {
+			getFromDB(prodID);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public String getFromDB(int prodID) throws SQLException  {
-		DB.connect();
 			ResultSet rs = DB.exQuery("SELECT * FROM products WHERE ProdID=" + prodID );
 			
 			while (rs.next()) {
@@ -80,17 +96,17 @@ public class Product {
 				this.DualMotor = rs.getBoolean("DualMotor");
 				this.ReleaseDate = rs.getDate("ReleaseDate");
 				this.ProductDelays = rs.getString("ProductDelays");
+				this.Price = rs.getInt("Price");
 			}
 			String ProdDesc = ProdName + " " + ReleaseDate.toString();
-		DB.close();
 		return ProdDesc;
 	}
 	
 	public int addToDb(){
 		int changedKey = 0;
 		try {
-			PreparedStatement preparedStatement = DB.getConn().prepareStatement("INSERT INTO products (ProdName, Colour, BatterySize, Autopilot, DualMotor, ReleaseDate, ProductDelays)"
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement preparedStatement = DB.getConn().prepareStatement("INSERT INTO products (ProdName, Colour, BatterySize, Autopilot, DualMotor, ReleaseDate, ProductDelays, Price)"
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			preparedStatement.setString(1, ProdName);
 			preparedStatement.setString(2, Colour);
 			preparedStatement.setString(3, BatterySize);
@@ -98,6 +114,7 @@ public class Product {
 			preparedStatement.setBoolean(5, DualMotor);
 			preparedStatement.setDate(6, ReleaseDate);
 			preparedStatement.setString(7, ProductDelays);
+			preparedStatement.setInt(8, Price);
 			changedKey = preparedStatement.executeUpdate();
 			
 		} catch (SQLException e) {
@@ -106,7 +123,16 @@ public class Product {
 		return changedKey;
 	}
 	
+		
 	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		String stringy = "ProdName, Colour, BatterSize, Autopilot, Dualmotor, Product delays, Price\n";
+		stringy += ProdName + ", " + Colour + ", " + BatterySize + ", " + Autopilot + ", " + DualMotor + ", " + ReleaseDate + ", " + ProductDelays + ", " + Price;
+		return stringy;
+	}
+
 	/**
 	 * @return the prodName
 	 */
@@ -190,6 +216,20 @@ public class Product {
 	 */
 	public void setProductDelays(String productDelays) {
 		ProductDelays = productDelays;
+	}
+
+	/**
+	 * @return the price
+	 */
+	public int getPrice() {
+		return Price;
+	}
+
+	/**
+	 * @param price the price to set
+	 */
+	public void setPrice(int price) {
+		Price = price;
 	}
 	
 	

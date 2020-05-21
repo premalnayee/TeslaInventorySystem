@@ -3,9 +3,6 @@ package test.com.objects;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.SQLException;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +12,7 @@ import com.objects.Order;
 
 class OrderTest {
 	
-	Order ord = new Order(1, true, "credit card");
+	Order ord = new Order(1, true, "credit card", 40000);
 	int generatedIndex;
 	
 	@BeforeEach

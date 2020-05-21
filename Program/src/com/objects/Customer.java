@@ -1,11 +1,11 @@
 package com.objects;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.DBlink.DB;
-import com.mysql.cj.protocol.Resultset;
-import com.mysql.cj.xdevapi.PreparableStatement;
 
 //import java.util.HashMap;
 
@@ -39,7 +39,7 @@ public class Customer {
 //		this.customerParameters = customerParameters;
 //	}
 	
-	private int CustID;
+	private int CustID = 1;
 	private String FirstName;
 	private String LastName;
 	private String Address;
@@ -65,36 +65,119 @@ public class Customer {
 		Age = age;
 	}
 	
+	
+	/**
+	 * 
+	 */
+	public Customer() {
+		super();
+	}
+
+	
+	/**
+	 * 
+	 */
+	
+	
+	public Customer(int custID) {
+		super();
+		try {
+			getFromDB(custID);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("SQL exception");
+			System.out.println("Error with finding record with that custID: " + custID);
+			//e.printStackTrace();
+		} catch (NullPointerException a) {
+			// TODO: handle exception
+			System.out.println("Nullpointer exception");
+			System.out.println("Error with finding record with that custID: " + custID);
+			//e.printStackTrace();
+		}
+	}
+
+
 	public String getFromDB(int custID) throws SQLException  {
-			ResultSet rs = DB.exQuery("SELECT * FROM customers WHERE CustID=" + custID );
+		ResultSet rs;
+		
+			try {
+				rs = DB.exQuery("SELECT * FROM customers WHERE CustID=" + custID );
+				
+				while (rs.next()) {
+					this.CustID    = rs.getInt("CustID");
+					this.FirstName = rs.getString("FirstName");
+					this.LastName  = rs.getString("LastName");
+					this.Address   = rs.getString("Address");
+					this.EmailAddress = rs.getString("EmailAddress");
+					this.PhoneNumber = rs.getString("PhoneNumber");
+					this.Age		= rs.getInt("Age");
+				}
+				String name = FirstName + " " + LastName;
+				System.out.println(name);
+			return name;
 			
-			while (rs.next()) {
-				this.CustID    = rs.getInt("CustID");
-				this.FirstName = rs.getString("FirstName");
-				this.LastName  = rs.getString("LastName");
-				this.Address   = rs.getString("Address");
-				this.EmailAddress = rs.getString("EmailAddress");
-				this.PhoneNumber = rs.getString("PhoneNumber");
-				this.Age		= rs.getInt("Age");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("SQL exception");
+				System.out.println("Error with finding record with that custID: " + custID);
+				//e.printStackTrace();
+			} catch (NullPointerException a) {
+				// TODO: handle exception
+				System.out.println("Nullpointer exception");
+				System.out.println("Error with finding record with that custID: " + custID);
+				//e.printStackTrace();
 			}
-			String name = FirstName + " " + LastName;
-			System.out.println(name);
-		return name;
+		return null;
 	}
 	
 	public int addToDb(){
-			String Query = "INSERT INTO Customers (FirstName, LastName, Address, EmailAddress, PhoneNumber, Age) ";
-			Query += "VALUES (" + FirstName + ", " + LastName + ", " + Address + ", " + EmailAddress + ", "+ PhoneNumber + ", "+ Age + ")";
-			int changedKey = DB.exUpdate(Query);
+		/*
+		 * String Query =
+		 * "INSERT INTO Customers (FirstName, LastName, Address, EmailAddress, PhoneNumber, Age) "
+		 * ; Query += "VALUES (" + FirstName + ", " + LastName + ", " + Address + ", " +
+		 * EmailAddress + ", "+ PhoneNumber + ", "+ Age + ")"; int changedKey =
+		 * DB.exUpdate(Query); return changedKey;
+		 */
+		
+		System.out.println("here");
+		
+		int changedKey = 0;
+		try {
+			PreparedStatement preparedStatement = DB.getConn().prepareStatement("INSERT INTO Customers (FirstName, LastName, Address, EmailAddress, PhoneNumber, Age)"
+					+ "VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1, this.FirstName);
+			preparedStatement.setString(2, this.LastName);
+			preparedStatement.setString(3, this.Address);
+			preparedStatement.setString(4, this.EmailAddress);
+			preparedStatement.setString(5, this.PhoneNumber);
+			preparedStatement.setInt(6, this.Age);
+			changedKey = preparedStatement.executeUpdate();
+			
+		} catch (SQLException e) {
+			System.out.println("SQL Error in products class addtodb method");
+		} catch (NullPointerException a){
+			System.out.println("Nullpoint error in addToDb method \nShowing all variables" + toString());
+		}
 		return changedKey;
 	}
 	
-//	public String createAddQuery() {
-//		
-//		return Query;
-//	}
 	
 	
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		if (CustID == 0) {
+			return null;
+		} else {
+			String stringy =  "\nFirstName, LastName, Address, EmailAddress, PhoneNumber, Age \n";
+			stringy += CustID + ", " + FirstName + ", " + LastName + ", " + Address + ", " + EmailAddress + ", "+ PhoneNumber + ", " + Age;
+		return stringy;
+		}
+	}
+
+
+
 	/**
 	 * @return the custID
 	 */
@@ -180,11 +263,6 @@ public class Customer {
 	 */
 	public void setAge(int age) {
 		Age = age;
-	}
-	
-	public static void main(String[] args) throws SQLException {
-		Customer harry = new Customer("Harry", "bob", "10", "f@f", "12345", 12);
-		harry.getFromDB(1);
 	}
 	
 }

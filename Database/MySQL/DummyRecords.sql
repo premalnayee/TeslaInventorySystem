@@ -24,11 +24,13 @@ VALUES ('John', 'Gerry', '10 fdsfds', 'fdsfsd@gfadsf.com', '+1334324253543','12'
 INSERT INTO `teslainventory`.`orders`
 (`CustID`,
 `Warranty`,
-`PaymentMethod`)
+`PaymentMethod`,
+`Total`)
 VALUES
 (1,
 true,
-"credit card");
+"credit card",
+40000);
 
 INSERT INTO `teslainventory`.`products`
 (`ProdName`,
@@ -37,7 +39,8 @@ INSERT INTO `teslainventory`.`products`
 `Autopilot`,
 `DualMotor`,
 `ReleaseDate`,
-`ProductDelays`)
+`ProductDelays`,
+`Price`)
 VALUES
 ("Model Y",
 "Black",
@@ -45,6 +48,7 @@ VALUES
 true,
 true,
 "2020-03-13",
-"");
+"",
+40000);
 
 SELECT * FROM teslainventory.products;

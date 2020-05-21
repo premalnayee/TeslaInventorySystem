@@ -28,6 +28,7 @@ CREATE TABLE Products (
     DualMotor BOOLEAN NOT NULL,
     ReleaseDate DATE,
     ProductDelays VARCHAR(32) NOT NULL,
+    Price INT NOT NULL,
     PRIMARY KEY (ProdID)
 );
 
@@ -36,6 +37,7 @@ CREATE TABLE Orders (
     CustID INT,
     Warranty BOOLEAN NOT NULL,
     PaymentMethod VARCHAR(32),
+    Total INT NOT NULL,
     PRIMARY KEY (OrderID),
     FOREIGN KEY (CustID)
         REFERENCES Customers (CustID)

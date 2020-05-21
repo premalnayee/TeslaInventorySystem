@@ -1,10 +1,11 @@
 package com.objects;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.DBlink.DB;
-import com.mysql.cj.x.protobuf.MysqlxSql.StmtExecute;
 
 //import java.util.HashMap;
 
@@ -24,18 +25,38 @@ public class Order {
 	private int CustID;
 	private boolean Warranty;
 	private String PaymentMethod;
+	private int Total;
 	/**
 	 * @param custID
 	 * @param warranty
 	 * @param paymentMethod
 	 */
-	public Order(int custID, boolean warranty, String paymentMethod) {
+	
+	
+	
+	public Order(int custID, boolean warranty, String paymentMethod, int total) {
 		super();
 		CustID = custID;
 		Warranty = warranty;
 		PaymentMethod = paymentMethod;
+		Total = total;
 	}
 	
+	
+	/**
+	 * @param orderID
+	 */
+	public Order(int orderID) {
+		super();
+		try {
+			getFromDB(orderID);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
 	public String getFromDB(int orderID) throws SQLException  {
 			ResultSet rs = DB.exQuery("SELECT * FROM orders WHERE OrderID=" + orderID );
 			
@@ -44,6 +65,7 @@ public class Order {
 				this.CustID    = rs.getInt("CustID");
 				this.Warranty = rs.getBoolean("Warranty");
 				this.PaymentMethod  = rs.getString("PaymentMethod");
+				this.Total = rs.getInt("Total");
 			}
 			String orderdesc = OrderID + " " + Warranty;
 			//System.out.println(orderdesc);
@@ -51,12 +73,41 @@ public class Order {
 	}
 	
 	public int addToDb(){
-			String Query = "INSERT INTO orders (CustID, Warranty, PaymentMethod) ";
-			Query += "VALUES (\" " + CustID + "\", \"" + Boolean.compare(Warranty, false)+ "\", \"" + PaymentMethod + "\")";
-			int changedKey = DB.exUpdate(Query);
+		/*
+		 * String Query =
+		 * "INSERT INTO orders (CustID, Warranty, PaymentMethod, Total) "; Query +=
+		 * "VALUES (\" " + CustID + "\", \"" + Boolean.compare(Warranty, false)+
+		 * "\", \"" + PaymentMethod + "\", " + Total + ")"; int changedKey =
+		 * DB.exUpdate(Query); return changedKey;
+		 */
+		
+		int changedKey = 0;
+		try {
+			PreparedStatement preparedStatement = DB.getConn().prepareStatement("INSERT INTO orders (CustID, Warranty, PaymentMethod, Total)"
+					+ "VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, CustID);
+			preparedStatement.setBoolean(2, Warranty);
+			preparedStatement.setString(3, PaymentMethod);
+			preparedStatement.setInt(4, Total);
+			changedKey = preparedStatement.executeUpdate();
+			
+		} catch (SQLException e) {
+			System.out.println("SQL Error in products class addtodb method");
+		}
 		return changedKey;
 	}
 	
+	
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		String stringy = "\nOrderID, CustID, Warranty, Payment method, Total\n";
+		stringy += OrderID + ", " + CustID + ", " + Warranty + ", " + PaymentMethod + ", " + Total; 
+		return stringy;
+	}
+
+
 	/**
 	 * @return the custID
 	 */
@@ -92,6 +143,20 @@ public class Order {
 	 */
 	public void setPaymentMethod(String paymentMethod) {
 		PaymentMethod = paymentMethod;
+	}
+
+	/**
+	 * @return the total
+	 */
+	public int getTotal() {
+		return Total;
+	}
+
+	/**
+	 * @param total the total to set
+	 */
+	public void setTotal(int total) {
+		Total = total;
 	}
 	
 }

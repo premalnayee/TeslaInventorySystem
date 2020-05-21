@@ -13,7 +13,7 @@ import com.objects.Product;
 
 class ProductTest {
 	
-	Product prod = new Product("Model X", "Space Grey", "75 KW", true, true, "2015-09-29", "6 months");
+	Product prod = new Product("Model X", "Space Grey", "75 KW", true, true, "2015-09-29", "6 months",60000);
 
 	@BeforeEach
 	void init() {
