@@ -95,7 +95,7 @@ public class Order {
 				this.CustID    = rs.getInt("CustID");
 				this.Warranty = rs.getBoolean("Warranty");
 				this.PaymentMethod  = rs.getString("PaymentMethod");
-				this.Total = rs.getInt("Total");
+				this.Total = rs.getInt("Total"); 
 			}
 			System.out.println(toString());
 			rs = DB.exQuery("SELECT * FROM ProductOrderLookup WHERE OrderID = " + orderID );
@@ -144,7 +144,28 @@ public class Order {
 		return changedKey;
 	}
 	
-	
+	public void printAllOrd() {
+		try {
+			ResultSet rs = DB.exQuery("SELECT * FROM Orders");
+
+			while (rs.next()) {
+				//System.out.println(rs.getInt("CustID") + rs.getString("FirstName"));
+				int OrderID = rs.getInt("OrderID");
+				int CustID = rs.getInt("CustID");
+				int Total = rs.getInt("Total");
+				System.out.println(OrderID + " " + CustID + " " + Total);
+			}
+
+		} catch (SQLException e) { // TODO Auto-generated catch block
+			System.out.println("SQL exception");
+			System.out.println("Error with finding record with that ");
+			e.printStackTrace(); 
+		} catch (NullPointerException a) { // TODO: handle
+			//exception System.out.println("Nullpointer exception");
+			System.out.println("Error with finding record with that ");
+			//e.printStackTrace(); 
+			}
+	}
 	
 	@Override
 	public String toString() {

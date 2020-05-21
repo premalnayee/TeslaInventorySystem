@@ -41,7 +41,7 @@ class CustomerTest {
 	
 	@Test
 	public void testGetFromDB() throws SQLException  {
-		//assertEquals("John Gerry", findJohn.getFromDB(1));
+		assertEquals("John Gerry", findJohn.getFromDB(1));
 	}
 
 	@Test

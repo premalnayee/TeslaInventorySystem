@@ -157,6 +157,29 @@ public class Product {
 		return 0;
 	}
 	
+	public void printAllProd() {
+		try {
+			ResultSet rs = DB.exQuery("SELECT * FROM products");
+
+			while (rs.next()) {
+				//System.out.println(rs.getInt("CustID") + rs.getString("FirstName"));
+				int ProdID    = rs.getInt("ProdID");
+				String ProdName = rs.getString("ProdName");
+				String Price  = rs.getString("Price");
+				System.out.println(ProdID + " " + ProdName + " " + Price);
+			}
+
+		} catch (SQLException e) { // TODO Auto-generated catch block
+			System.out.println("SQL exception");
+			System.out.println("Error with finding record with that ");
+			e.printStackTrace(); 
+		} catch (NullPointerException a) { // TODO: handle
+			//exception System.out.println("Nullpointer exception");
+			System.out.println("Error with finding record with that ");
+			//e.printStackTrace(); 
+			}
+	}
+	
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub

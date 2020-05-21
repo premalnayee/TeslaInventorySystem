@@ -1,7 +1,10 @@
 package com.Users;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import com.DBlink.DB;
 import com.UI.UI;
 import com.objects.Customer;
 import com.objects.Order;
@@ -38,7 +41,7 @@ public class Administator {
 				break;
 			
 			default:
-				throw new IllegalArgumentException("Unexpected value: " + option);
+				System.out.println("Error try again");;
 			}
 		} while (running);
 	}
@@ -148,8 +151,20 @@ public class Administator {
 			System.out.println("Payment method");
 			String paymentMethod = UI.in.nextLine();
 			
-			System.out.println("What is the total of the order");
-			int total = Integer.parseInt(UI.in.nextLine());
+//			System.out.println("What is the total of the order");
+//			int total = Integer.parseInt(UI.in.nextLine());
+			
+			System.out.println("Enter the ProdID of the products you would like to order");
+			ArrayList<Integer> ProductList = new ArrayList<Integer>();
+			
+			boolean another=true;
+			do {
+				int prodID = Integer.parseInt(UI.in.nextLine());
+				ProductList.add(prodID);
+				
+				System.out.println("Would you like to order another y/n");
+				if (!askUserForBoolean()) { another = false; }
+			} while (another);
 			
 			// Confirm with user
 			System.out.println("Would you like to add this product to the system y/n");
@@ -159,7 +174,7 @@ public class Administator {
 					break;
 				case "y":
 					System.out.println("Entering to system");
-					Order newOrd = new Order(custID, warranty, paymentMethod, total);
+					Order newOrd = new Order(custID, warranty, paymentMethod, ProductList);
 					newOrd.addToDb();
 					System.out.println("Added, returning to main menu \n");
 					break;
@@ -173,7 +188,7 @@ public class Administator {
 			break;
 		
 		default:
-			throw new IllegalArgumentException("Unexpected value: " + option);
+			System.out.println("Error try again");;
 		}
 	}
 	
@@ -194,53 +209,85 @@ public class Administator {
 	private void read() {
 		System.out.println("Which table would you like to create a record for?");
 		System.out.println("Type \'customer\' to add customers, \'product\' to add products, \'order\' for orders, \'return\' to return to original menu");
-		
+
 		switch(UI.in.nextLine()) {
-		
+
 		case "customer":
-			System.out.println("Enter the CustID of the customer you would like to view");
-			int custIDView = Integer.parseInt(UI.in.nextLine());
+			System.out.println("Enter the CustID of the customer you would like to view (0 for all)");
+			String custReadOption = UI.in.nextLine(); 
 			
-			// Get the details of the customer from the database using the ID
-			Customer readCustomer;
-			try {
-				readCustomer = new Customer(custIDView);
-				System.out.println(readCustomer.toString() + "\n");
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				System.out.println("Number format exception");
+			switch (custReadOption) {
+
+			case "0":
+				Customer allCust = new Customer();
+				allCust.printAllCust();
+				break;
+			default:
+				int custIDView = Integer.parseInt(custReadOption);
+
+				// Get the details of the customer from the database using the ID
+				Customer readCustomer;
+				try {
+					readCustomer = new Customer(custIDView);
+					System.out.println(readCustomer.toString() + "\n");
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					System.out.println("Number format exception");
+				}
 			}
 			break;
 		case "product":
-			System.out.println("Enter the ProdID of the product you would like to view");
-			int  prodIDView = Integer.parseInt(UI.in.nextLine());
+			System.out.println("Enter the ProdID of the product you would like to view (0 for all)");
 			
-			// Get the details of the products from the database using the ID
-			try {
-				Product readProduct = new Product(prodIDView);
-				System.out.println(readProduct.toString() + "\n");
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				System.out.println("Number format exception");
+			String prodReadOption =  UI.in.nextLine();			
+			switch (prodReadOption) {
+			
+			case "0":
+				Product allProd = new Product();
+				allProd.printAllProd(); 
+				break;
+			default:
+				int  prodIDView = Integer.parseInt(prodReadOption);
+				
+				// Get the details of the products from the database using the ID
+				try {
+					Product readProduct = new Product(prodIDView);
+					System.out.println(readProduct.toString() + "\n");
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					System.out.println("Number format exception");
+				}
 			}
 			break;
 		case "order":
-			System.out.println("Enter the orderID of the order you would like to view");
-			int orderIDView = Integer.parseInt(UI.in.nextLine());
+			System.out.println("Enter the orderID of the order you would like to view (0 for all)");
+			String orderReadOption = UI.in.nextLine();
 			
-			// Get the details of the products from the database using the ID
-			try {
-				Order readOrder = new Order(orderIDView);
-				System.out.println(readOrder.toString() + "\n");
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				System.out.println("Number format exception");
+			switch (orderReadOption) {
+
+			case "0":
+				Order allOrd = new Order();
+				allOrd.printAllOrd();
+				break;
+			default:
+				int orderIDView = Integer.parseInt(orderReadOption);
+
+				// Get the details of the products from the database using the ID
+				try {
+					Order readOrder = new Order(orderIDView);
+					System.out.println(readOrder.toString() + "\n");
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					System.out.println("Number format exception");
+				}
 			}
-			
 			break;
 		case "return":
 			System.out.println("Returning... \n");
+		default:
+			System.out.println("Error try again;");
 		}
+		
 		
 		
 	}

@@ -202,6 +202,29 @@ public class Customer {
 		return 0;
 	}
 	
+	public void printAllCust() {
+		try {
+			ResultSet rs = DB.exQuery("SELECT * FROM customers");
+
+			while (rs.next()) {
+				//System.out.println(rs.getInt("CustID") + rs.getString("FirstName"));
+				int CustID    = rs.getInt("CustID");
+				String FirstName = rs.getString("FirstName");
+				String LastName  = rs.getString("LastName");
+				System.out.println(CustID + " " + FirstName + " " + LastName);
+			}
+
+		} catch (SQLException e) { // TODO Auto-generated catch block
+			System.out.println("SQL exception");
+			System.out.println("Error with finding record with that ");
+			e.printStackTrace(); 
+		} catch (NullPointerException a) { // TODO: handle
+			//exception System.out.println("Nullpointer exception");
+			System.out.println("Error with finding record with that ");
+			//e.printStackTrace(); 
+			}
+	}
+	
 	
 	@Override
 	public String toString() {
