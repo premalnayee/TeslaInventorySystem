@@ -233,6 +233,8 @@ public class Administator {
 				} catch (NumberFormatException e) {
 					// TODO Auto-generated catch block
 					System.out.println("Number format exception");
+				} catch (IndexOutOfBoundsException i) {
+					System.out.println("Index Out of bounds in Administrator.read.Order" + "\n");
 				}
 			}
 			break;
@@ -256,6 +258,8 @@ public class Administator {
 				} catch (NumberFormatException e) {
 					// TODO Auto-generated catch block
 					System.out.println("Number format exception");
+				} catch (IndexOutOfBoundsException i) {
+					System.out.println("Index Out of bounds in Administrator.read.Order" + "\n");
 				}
 			}
 			break;
@@ -279,6 +283,8 @@ public class Administator {
 				} catch (NumberFormatException e) {
 					// TODO Auto-generated catch block
 					System.out.println("Number format exception");
+				} catch (IndexOutOfBoundsException i) {
+					System.out.println("Index Out of bounds in Administrator.read.Order" + "\n");
 				}
 			}
 			break;

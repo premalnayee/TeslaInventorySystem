@@ -11,6 +11,7 @@ FROM `teslainventory`.`customers`;
 
 SELECT * FROM Orders;
 SELECT * FROM Customers;
+SELECT * FROM Products;
 SELECT * FROM ProductOrderLookup;
 
 SELECT CustID FROM Customers 
@@ -89,7 +90,7 @@ VALUES
 "75KW",
 true,
 true,
-"2019-03-13",
+"2017-07-07",
 "",
 30000);
 
